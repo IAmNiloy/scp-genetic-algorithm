@@ -5,15 +5,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by jamescobonkerr on 12/11/16.
- */
 public class Problem {
     private int rows;
     private int columns;
     private List<Integer> costs;
-    private List<List<Integer>> rowCoverings; //columns which cover each row
-    private List<List<Integer>> columnCoverings; //rows which each columns covers
+    private List<List<Integer>> rowCoverings; // Columns which cover each row
+    private List<List<Integer>> columnCoverings; // Rows which each column covers
 
     public int getRows() {
         return rows;
@@ -56,8 +53,6 @@ public class Problem {
     }
 
     public void readFile(String inputFile){
-        //System.out.println(System.getProperty("user.dir"));
-        //String inputFile = "data/Instances/scp41.txt";
         File file = new File(inputFile);
         BufferedReader reader = null;
 
@@ -83,10 +78,8 @@ public class Problem {
 
             rowCoverings = new ArrayList<List<Integer>>();
 
-            for (int i = 0;i < rows;i++){ //collect columns for each row
-                //System.out.println(i);
+            for (int i = 0;i < rows;i++){ // Collect columns for each row
                 int noColumns = Integer.parseInt(reader.readLine().trim().split("\\s+")[0]);
-                //System.out.println(noColumns);
                 int addedColumns = 0;
                 List<Integer> singleRowCoverings = new ArrayList<Integer>();
                 while(addedColumns < noColumns){
@@ -104,8 +97,8 @@ public class Problem {
             columnCoverings = new ArrayList<List<Integer>>();
 
             for (int i = 1;i <= columns;i++){
-                List<Integer> singleColumnCoverings = new ArrayList<Integer>(); //ie each column covers this set of rows
-                for (int j = 1;j <= rows;j++){ //for each row
+                List<Integer> singleColumnCoverings = new ArrayList<Integer>(); // Each column covers this set of rows
+                for (int j = 1;j <= rows;j++){
                     List<Integer> singleRowCoverings = rowCoverings.get(j - 1);
                     if (singleRowCoverings.contains(i)){
                         singleColumnCoverings.add(j);
@@ -118,7 +111,5 @@ public class Problem {
         } catch (IOException e){
             e.printStackTrace();
         }
-
-
     }
 }

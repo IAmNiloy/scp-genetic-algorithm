@@ -1,9 +1,6 @@
 import java.util.*;
 
-/**
- * Created by jamescobonkerr on 12/11/16.
- */
-public class Genetic {
+public class GeneticAlgorithm {
     private int t;
     private Problem problem;
     private int populationSize;
@@ -16,7 +13,7 @@ public class Genetic {
 
     private List<Map.Entry<Long,Integer>> log;
 
-    public Genetic(Problem problem, int populationSize, int runningTime, int tournamentSize) {
+    public GeneticAlgorithm(Problem problem, int populationSize, int runningTime, int tournamentSize) {
         this.problem = problem;
         this.populationSize = populationSize;
         this.runningTime = runningTime;
@@ -38,7 +35,7 @@ public class Genetic {
         }
         return best;
     }
-//
+
     public BitSet crossover(BitSet parentOne, BitSet parentTwo){
         BitSet newSolution = new BitSet();
         for (int i = 0;i < parentOne.length();i++){
@@ -67,7 +64,7 @@ public class Genetic {
 
     public int fitness(BitSet solution){
         int fitness = 0;
-        for (int i = 0;i < solution.length();i++){ //for each column
+        for (int i = 0;i < solution.length();i++){
             if (solution.get(i)){
                 fitness += problem.getCosts().get(i);
             }
@@ -103,28 +100,16 @@ public class Genetic {
     }
 
     public void evolve(){
-        //System.out.println("evolve");
         boolean unique = false;
         BitSet newSolution = null;
         while (!unique) {
-            //System.out.println("tournament 1");
             BitSet parentOne = tournamentSelection();
-            //System.out.println("tournament 2");
             BitSet parentTwo = tournamentSelection();
-            //System.out.println("crossover");
             newSolution = crossover(parentOne, parentTwo);
-            //newSolution = child;
-            //System.out.println("mutation");
             newSolution = mutation(newSolution);
-            //System.out.println("is feasible?" + Solution.isFeasible(newSolution, problem));
-            //System.out.println("make feasible");
             newSolution = makeFeasible(newSolution);
-            //System.out.println("after make feasible. is feasible?" + Solution.isFeasible(newSolution, problem));
-            //System.out.println("is unique");
             unique = isUnique(newSolution);
-            //newSolution = child;
         }
-        //System.out.println("replace");
         replace(newSolution);
         t++;
     }
@@ -165,11 +150,9 @@ public class Genetic {
         for (int i = 1;i < 60;i++){
             int temp = log.get(log.size() - i).getValue();
             if (temp != bestFitness) {
-                //System.out.println("Converged");
                 return false;
             }
         }
-        //System.out.println("Converged");
         return true;
     }
 
@@ -178,11 +161,8 @@ public class Genetic {
         while (!isConverged() && (((System.currentTimeMillis() - startTime) / 1000) / 60) < this.runningTime){
             if ((System.currentTimeMillis() - startTime) % 1000 == 0)
                 log.add(new AbstractMap.SimpleEntry<>((System.currentTimeMillis() - startTime), getBestFitness()));
-                //System.out.println("Best fitness\t" + getBestFitness());
             evolve();
         }
-        //long elapsedTime = ((System.currentTimeMillis() - startTime) / 1000);
-        //System.out.println(elapsedTime);
     }
 
     public List<Map.Entry<Long, Integer>> getLog() {

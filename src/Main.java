@@ -7,14 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.io.PrintWriter;
 
-/**
- * Created by jamescobonkerr on 12/11/16.
- */
 public class Main {
     public static void main(String[] args){
         int populationSize = 100;
 
-        int maxRunningTime = 30; //max running time in minutes
+        int maxRunningTime = 30; // Max running time in minutes
 
         int tournamentSize = 2;
 
@@ -44,11 +41,11 @@ public class Main {
 
             problem.readFile(fileDirectory + file);
 
-            Genetic ga = new Genetic(problem, populationSize, maxRunningTime, tournamentSize);
+            GeneticAlgorithm ga = new GeneticAlgorithm(problem, populationSize, maxRunningTime, tournamentSize);
 
-            //System.out.println("Initialising initial population");
+            System.out.println("Initialising initial population");
             ga.initialise();
-            //System.out.println("Completed initialising initial population");
+            System.out.println("Completed initialising initial population");
 
             ga.train();
 
