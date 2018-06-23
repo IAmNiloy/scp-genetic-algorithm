@@ -1,7 +1,9 @@
 import java.util.*;
 
 public class Solution {
+
     private static Random rnd = new Random();
+
     public static BitSet createSolution(Problem problem){
         BitSet genome = new BitSet(problem.getColumns());
         for (int i = 0;i < genome.length();i++){
@@ -11,7 +13,6 @@ public class Solution {
             List<Integer> columnsCoveringRow =  problem.getRowCoverings().get(i);
 
             Integer randomColumn = columnsCoveringRow.get(rnd.nextInt(columnsCoveringRow.size()));
-
 
             genome.set(randomColumn - 1);
         }

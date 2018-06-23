@@ -8,6 +8,7 @@ import java.util.Map;
 import java.io.PrintWriter;
 
 public class Main {
+
     public static void main(String[] args){
         int populationSize = 100;
 
@@ -15,7 +16,7 @@ public class Main {
 
         int tournamentSize = 2;
 
-        String fileList = "data/Instances/filelist.txt";
+        String fileList = "data/filelist.txt";
         File fileListFile = new File(fileList);
         BufferedReader reader;
         List<String> files = new ArrayList<>();
@@ -31,7 +32,7 @@ public class Main {
             e.printStackTrace();
         }
 
-        String fileDirectory = "data/Instances/";
+        String fileDirectory = "data/instances/";
 
         long startTime = System.currentTimeMillis();
 
@@ -52,7 +53,7 @@ public class Main {
             List<Map.Entry<Long, Integer>> log = ga.getLog();
 
             try{
-                PrintWriter writer = new PrintWriter("data/Output/" + file, "UTF-8");
+                PrintWriter writer = new PrintWriter("data/output/" + file, "UTF-8");
                 for (Map.Entry<Long, Integer> entry : log) {
                     writer.println(entry.getKey() + "," + entry.getValue());
                 }
