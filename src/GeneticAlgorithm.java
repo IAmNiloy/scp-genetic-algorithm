@@ -43,7 +43,7 @@ public class GeneticAlgorithm {
                 newSolution.set(i, parentOne.get(i));
             else{
                 double prob = fitness(parentTwo) / (fitness(parentOne) + fitness(parentTwo));
-                if (rnd.nextDouble() >= prob) //not sure about this
+                if (rnd.nextDouble() >= prob)
                     newSolution.set(i, parentOne.get(i));
                 else
                     newSolution.set(i, parentTwo.get(i));

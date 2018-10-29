@@ -9,8 +9,8 @@ public class Problem {
     private int rows;
     private int columns;
     private List<Integer> costs;
-    private List<List<Integer>> rowCoverings; // Columns which cover each row
-    private List<List<Integer>> columnCoverings; // Rows which each column covers
+    private List<List<Integer>> rowCoverings;
+    private List<List<Integer>> columnCoverings;
 
     public int getRows() {
         return rows;
