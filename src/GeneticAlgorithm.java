@@ -22,7 +22,7 @@ public class GeneticAlgorithm {
         this.log = new ArrayList<>();
     }
 
-    public BitSet tournamentSelection(){
+    private BitSet tournamentSelection(){
         BitSet best = null;
         int bestFitness = Integer.MAX_VALUE;
         for (int i = 0;i < this.tournamentSize;i++){
@@ -36,7 +36,7 @@ public class GeneticAlgorithm {
         return best;
     }
 
-    public BitSet crossover(BitSet parentOne, BitSet parentTwo){
+    private BitSet crossover(BitSet parentOne, BitSet parentTwo){
         BitSet newSolution = new BitSet();
         for (int i = 0;i < parentOne.length();i++){
             if (parentOne.get(i) == parentTwo.get(i))
@@ -52,7 +52,7 @@ public class GeneticAlgorithm {
         return newSolution;
     }
 
-    public boolean isUnique(BitSet solution){
+    private boolean isUnique(BitSet solution){
         for (int i = 0;i < this.populationSize;i++){
             BitSet xor = (BitSet)solution.clone();
             xor.xor(this.population[i]);
@@ -62,7 +62,7 @@ public class GeneticAlgorithm {
         return true;
     }
 
-    public int fitness(BitSet solution){
+    private int fitness(BitSet solution){
         int fitness = 0;
         for (int i = 0;i < solution.length();i++){
             if (solution.get(i)){
@@ -72,16 +72,16 @@ public class GeneticAlgorithm {
         return fitness;
     }
 
-    public BitSet mutation(BitSet solution){
+    private BitSet mutation(BitSet solution){
         solution.flip(rnd.nextInt(solution.length()));
         return solution;
     }
 
-    public BitSet makeFeasible(BitSet solution){
+    private BitSet makeFeasible(BitSet solution){
         return Solution.makeFeasible(solution, problem);
     }
 
-    public void replace(BitSet solution){
+    private void replace(BitSet solution){
         if (solution != null){
             int averageFitness = 0;
             for (int i = 0;i < this.populationFitness.length;i++)
@@ -99,7 +99,7 @@ public class GeneticAlgorithm {
         }
     }
 
-    public void evolve(){
+    private void evolve(){
         boolean unique = false;
         BitSet newSolution = null;
         while (!unique) {
@@ -114,14 +114,14 @@ public class GeneticAlgorithm {
         t++;
     }
 
-    public void generateInitialPopulation(){
+    private void generateInitialPopulation(){
         population = new BitSet[this.populationSize];
         for (int i = 0;i < this.populationSize;i++){
             this.population[i] = Solution.createSolution(this.problem);
         }
     }
 
-    public void calculateAllFitness(){
+    private void calculateAllFitness(){
         populationFitness = new int[this.populationSize];
         for (int i = 0;i < this.populationSize;i++){
             this.populationFitness[i] = fitness(this.population[i]);
@@ -143,7 +143,7 @@ public class GeneticAlgorithm {
         return bestFitness;
     }
 
-    public boolean isConverged(){
+    private boolean isConverged(){
         if (log.isEmpty() || log.size() < 60)
             return false;
         int bestFitness = log.get(log.size() - 1).getValue();
