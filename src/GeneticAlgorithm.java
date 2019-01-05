@@ -1,17 +1,16 @@
 import java.util.*;
 
 public class GeneticAlgorithm {
-    private int t;
-    private Problem problem;
-    private int populationSize;
     private BitSet[] population;
-    private int[] populationFitness;
+    private int populationSize;
     private int runningTime;
+    private int t;
     private int tournamentSize;
+    private int[] populationFitness;
+    private Problem problem;
 
+    private List<Map.Entry<Long,Integer>> log = new ArrayList<>();
     private Random rnd = new Random();
-
-    private List<Map.Entry<Long,Integer>> log;
 
     public GeneticAlgorithm(Problem problem, int populationSize, int runningTime, int tournamentSize) {
         this.problem = problem;
@@ -19,15 +18,15 @@ public class GeneticAlgorithm {
         this.runningTime = runningTime;
         this.tournamentSize = tournamentSize;
 
-        this.log = new ArrayList<>();
+        this.initialise();
     }
 
     private BitSet tournamentSelection(){
         BitSet best = null;
         int bestFitness = Integer.MAX_VALUE;
         for (int i = 0;i < this.tournamentSize;i++){
-            int random = rnd.nextInt(population.length);
-            BitSet individual = population[random];
+            int random = this.rnd.nextInt(this.population.length);
+            BitSet individual = this.population[random];
             if ((best == null) || (this.populationFitness[random] < bestFitness)) {
                 best = individual;
                 bestFitness = this.populationFitness[random];
@@ -42,8 +41,8 @@ public class GeneticAlgorithm {
             if (parentOne.get(i) == parentTwo.get(i))
                 newSolution.set(i, parentOne.get(i));
             else{
-                double prob = fitness(parentTwo) / (fitness(parentOne) + fitness(parentTwo));
-                if (rnd.nextDouble() >= prob)
+                double prob = this.fitness(parentTwo) / (this.fitness(parentOne) + this.fitness(parentTwo));
+                if (this.rnd.nextDouble() >= prob)
                     newSolution.set(i, parentOne.get(i));
                 else
                     newSolution.set(i, parentTwo.get(i));
@@ -66,19 +65,19 @@ public class GeneticAlgorithm {
         int fitness = 0;
         for (int i = 0;i < solution.length();i++){
             if (solution.get(i)){
-                fitness += problem.getCosts().get(i);
+                fitness += this.problem.getCosts().get(i);
             }
         }
         return fitness;
     }
 
     private BitSet mutation(BitSet solution){
-        solution.flip(rnd.nextInt(solution.length()));
+        solution.flip(this.rnd.nextInt(solution.length()));
         return solution;
     }
 
     private BitSet makeFeasible(BitSet solution){
-        return Solution.makeFeasible(solution, problem);
+        return Solution.makeFeasible(solution, this.problem);
     }
 
     private void replace(BitSet solution){
@@ -86,13 +85,13 @@ public class GeneticAlgorithm {
             int averageFitness = 0;
             for (int i = 0;i < this.populationFitness.length;i++)
                 averageFitness += this.populationFitness[i];
-            averageFitness = (int) averageFitness / this.populationFitness.length;
+            averageFitness = (int)averageFitness / this.populationFitness.length;
             boolean isReplaced = false;
             while (!isReplaced){
-                int random = rnd.nextInt(population.length);
+                int random = this.rnd.nextInt(this.population.length);
                 if (this.populationFitness[random] > averageFitness){
                     this.population[random] = solution;
-                    this.populationFitness[random] = fitness(solution);
+                    this.populationFitness[random] = this.fitness(solution);
                     isReplaced = true;
                 }
             }
@@ -103,14 +102,14 @@ public class GeneticAlgorithm {
         boolean unique = false;
         BitSet newSolution = null;
         while (!unique) {
-            BitSet parentOne = tournamentSelection();
-            BitSet parentTwo = tournamentSelection();
-            newSolution = crossover(parentOne, parentTwo);
-            newSolution = mutation(newSolution);
-            newSolution = makeFeasible(newSolution);
-            unique = isUnique(newSolution);
+            BitSet parentOne = this.tournamentSelection();
+            BitSet parentTwo = this.tournamentSelection();
+            newSolution = this.crossover(parentOne, parentTwo);
+            newSolution = this.mutation(newSolution);
+            newSolution = this.makeFeasible(newSolution);
+            unique = this.isUnique(newSolution);
         }
-        replace(newSolution);
+        this.replace(newSolution);
         t++;
     }
 
@@ -124,17 +123,17 @@ public class GeneticAlgorithm {
     private void calculateAllFitness(){
         populationFitness = new int[this.populationSize];
         for (int i = 0;i < this.populationSize;i++){
-            this.populationFitness[i] = fitness(this.population[i]);
+            this.populationFitness[i] = this.fitness(this.population[i]);
         }
     }
 
     public void initialise(){
-        t = 0;
-        generateInitialPopulation();
-        calculateAllFitness();
+        this.t = 0;
+        this.generateInitialPopulation();
+        this.calculateAllFitness();
     }
 
-    public int getBestFitness(){
+    private int getBestFitness(){
         int bestFitness = Integer.MAX_VALUE;
         for (int i = 0;i < this.populationSize;i++){
             if (this.populationFitness[i] < bestFitness)
@@ -144,11 +143,11 @@ public class GeneticAlgorithm {
     }
 
     private boolean isConverged(){
-        if (log.isEmpty() || log.size() < 60)
+        if (this.log.isEmpty() || this.log.size() < 60)
             return false;
-        int bestFitness = log.get(log.size() - 1).getValue();
+        int bestFitness = this.log.get(this.log.size() - 1).getValue();
         for (int i = 1;i < 60;i++){
-            int temp = log.get(log.size() - i).getValue();
+            int temp = this.log.get(this.log.size() - i).getValue();
             if (temp != bestFitness) {
                 return false;
             }
@@ -158,14 +157,14 @@ public class GeneticAlgorithm {
 
     public void train(){
         long startTime = System.currentTimeMillis();
-        while (!isConverged() && (((System.currentTimeMillis() - startTime) / 1000) / 60) < this.runningTime){
+        while (!this.isConverged() && (((System.currentTimeMillis() - startTime) / 1000) / 60) < this.runningTime){
             if ((System.currentTimeMillis() - startTime) % 1000 == 0)
-                log.add(new AbstractMap.SimpleEntry<>((System.currentTimeMillis() - startTime), getBestFitness()));
-            evolve();
+                this.log.add(new AbstractMap.SimpleEntry<>((System.currentTimeMillis() - startTime), this.getBestFitness()));
+            this.evolve();
         }
     }
 
     public List<Map.Entry<Long, Integer>> getLog() {
-        return log;
+        return this.log;
     }
 }

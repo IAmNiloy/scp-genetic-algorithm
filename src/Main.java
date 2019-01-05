@@ -81,9 +81,6 @@ public class Main {
         Problem problem = new Problem();
         problem.readFile(this.fileDirectory + fileName);
         GeneticAlgorithm ga = new GeneticAlgorithm(problem, this.populationSize, this.maxRunningTime, this.tournamentSize);
-        System.out.println("Initialising initial population");
-        ga.initialise();
-        System.out.println("Completed initialising initial population");
         ga.train();
         this.logResults(ga.getLog(), fileName);
     }
